@@ -16,7 +16,8 @@ USAGE:
   >> require "rubygems"
   >> require "fastcaptcha"
   >> captcha = FastCaptcha.new
-  >> captcha = FastCaptcha.new(@memcache_connection, 3) # takes 2 args, memcache connection handle & complexity 1-4.
+  # takes 2 args, memcache connection handle & complexity 1-4. 4 is for battling harcore spammers.
+  >> captcha = FastCaptcha.new(@memcache_connection, 3)
   >> challenge = captcha.generate
   >> puts challenge.key
   >> puts challenge.image # PNG image data
@@ -31,7 +32,7 @@ SINATRA HELPER:
 
   require 'sinatra/captcha'
   class MyApp < Sinatra::Base
-    # ttl of captcha before use has to respond - 10s is an aggresive but reasonable value.
+    # ttl of captcha before user has to respond - 10s is an aggresive but reasonable value.
     set :captcha_ttl, 30
     # complexity 1 is simple, 4 is wicked hard (makes segmentation very difficult).
     set :captcha_level, 2
