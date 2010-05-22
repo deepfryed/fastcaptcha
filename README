@@ -16,7 +16,7 @@ USAGE:
   >> require "rubygems"
   >> require "fastcaptcha"
   >> captcha = FastCaptcha.new
-  # takes 2 args, memcache connection handle & complexity 1-4. 4 is for battling harcore spammers.
+  # takes 2 args, memcache connection handle & complexity 1-4. 4 is for battling hardcore spammers.
   >> captcha = FastCaptcha.new(@memcache_connection, 3)
   >> challenge = captcha.generate
   >> puts challenge.key
@@ -26,13 +26,13 @@ USAGE:
 SINATRA HELPER:
 
   * This adds a simple sinatra helper to display and validate captcha. Uses JQuery, so tough luck if you're
-    using another Javascript library (patches welcome).
+    using another Javascript library (patches welcome). If you're not using sinatra, you should be.
 
   Add the sinatra helper to your application:
 
   require 'sinatra/captcha'
   class MyApp < Sinatra::Base
-    # ttl of captcha before user has to respond - 10s is an aggresive but reasonable value.
+    # ttl of captcha before user has to respond - 10s is an aggressive but reasonable value.
     set :captcha_ttl, 30
     # complexity 1 is simple, 4 is wicked hard (makes segmentation very difficult).
     set :captcha_level, 2
