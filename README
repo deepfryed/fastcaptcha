@@ -1,0 +1,57 @@
+fastcaptcha is another image captcha solution. It's simple and very fast.
+
+INSTALL:
+  
+  sudo gem install fastcaptcha
+
+REQUIREMENT:
+
+  * Ruby >= 1.9.1
+  * rubygems >= 1.3.5
+  * ruby development libraries (debian: ruby1.9.1-dev)
+  * opencv >= 2.1.0 development libraries
+
+USAGE:
+
+  >> require "rubygems"
+  >> require "fastcaptcha"
+  >> captcha = FastCaptcha.new
+  >> captcha = FastCaptcha.new(@memcache_connection, 3) # takes 2 args, memcache connection handle & complexity 1-4.
+  >> challenge = captcha.generate
+  >> puts challenge.key
+  >> puts challenge.image # PNG image data
+
+
+SINATRA HELPER:
+
+  * This adds a simple sinatra helper to display and validate captcha. Uses JQuery, so tough luck if you're
+    using another Javascript library (patches welcome).
+
+  Add the sinatra helper to your application:
+
+  require 'sinatra/captcha'
+  class MyApp < Sinatra::Base
+    # ttl of captcha before use has to respond - 10s is an aggresive but reasonable value.
+    set :captcha_ttl, 30
+    # complexity 1 is simple, 4 is wicked hard (makes segmentation very difficult).
+    set :captcha_level, 2
+    register Sinatra::Captcha
+  end
+
+  Add the captcha to your form using the captcha helper:
+
+  captcha(ajax: true, id: 'captcha_div')
+
+  Validate the captcha on form submission:
+
+  if captcha_correct?
+    do_something
+  else
+    do_something_else
+  end
+
+
+LICENSE:
+
+GPL, so its free and comes with no guarantees. If it brings down your website or burns down your house, I will
+not be held responsible. Use it at your own risk.
