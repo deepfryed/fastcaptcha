@@ -9,7 +9,7 @@ Gem::Specification.new do |s|
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bharanee Rathna"]
-  s.date = %q{2010-05-22}
+  s.date = %q{2010-05-24}
   s.description = %q{A simple and fast image captcha generator that uses opencv and memcached.}
   s.email = %q{deepfryed@gmail.com}
   s.extensions = ["ext/extconf.rb"]

@@ -68,7 +68,11 @@ module Sinatra
               $('##{id}_v').click(function() {
                 load_captcha_#{id}();
                 $(this).closest('form').find('input[type="submit"]').removeAttr('disabled');
-                $('##{id}_r').click(function() { load_captcha_#{id}(); return false; });
+                $('##{id}_r').click(function() {
+                  load_captcha_#{id}();
+                  $(this).closest('form').find('input[type="submit"]').removeAttr('disabled');
+                  return false;
+                });
                 $(this).remove();
                 return false;
               });
@@ -79,7 +83,10 @@ module Sinatra
                 $('##{id}').load('/captcha/snippet/#{divid}', function() {
                   $('##{id}').find('input[name="captcha[response]"]').focus();
                 });
-                $('##{id}').delay(#{@ttl*500}).slideUp(250, function() { $('##{id}_r').show(); });
+                $('##{id}').delay(#{@ttl*500}).slideUp(250, function() {
+                  $(this).closest('form').find('input[type="submit"]').attr('disabled', 'disabled');
+                  $('##{id}_r').show();
+                });
                 return false;
             }
           </script>
