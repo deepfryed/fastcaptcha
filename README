@@ -51,8 +51,12 @@ SINATRA HELPER:
     do_something_else
   end
 
+  You can have multiple captchas in the same page within different <form> elements. Just make sure captcha
+  element ids are unique.
+
 
 LICENSE:
 
-GPL, so its free and comes with no guarantees. If it brings down your website or burns down your house, I will
-not be held responsible. Use it at your own risk.
+GNU GPLv3, so its free and comes with no guarantees. If it brings down your website or burns down your house, I will
+not be held responsible. Use it at your own risk. You can read all about GNU here: http://www.gnu.org and
+GNU GPLv3 here: http://www.gnu.org/licenses/gpl.txt.
