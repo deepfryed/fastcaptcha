@@ -1,7 +1,7 @@
 require_relative '../ext/fastcaptcha'
 require 'digest/sha1'
 class FastCaptcha
-  CHARSET = ('A'..'Z').to_a + (0..9).to_a - [ 'I', 1, 'O', 0 ]
+  CHARSET = ('A'..'Z').to_a + (0..9).to_a - [ 'I', 1, 'O', 0, 'G' ]
 
   def initialize cache=nil, level=1
     @cache = cache || memcached_connection

@@ -30,20 +30,20 @@ VALUE rb_captcha_image(VALUE self, VALUE string, VALUE lv) {
     char text[2];
     IplImage *img;
     CvMat *out;
-    int i, x, y;
+    int i, j, x, y;
     char *cstr = RSTRING_PTR(string);
     int W=strlen(cstr)*30+20, H=50;
     int level = NUM2INT(lv);
     double sx, sy;
     img = cvCreateImage(cvSize(W, H), 8, 3);
+    cvSet(img, cvScalarAll(255), 0);
     pts = (CvPoint *)malloc(sizeof(CvPoint)*(strlen(cstr)+1));
     for (i = 0; i < 5; i++) {
         sx = (float)(rand()%4)*0.1 + 1.0;
         sy = (float)(rand()%4)*0.1 + 1.0;
         cvInitFont(&font[i], CV_FONT_HERSHEY_SIMPLEX, sx, sy, 1, 2, 16);
     }
-    cvSet(img, cvScalarAll(255), 0);
-    if (level >= EASY && level < HARD) {
+    if (level > SILLY && level < HARD) {
         for (i = 0; i < W; i += 5) {
             c = CV_RGB(rand()%50 + 200, rand()%50 + 200, rand()%50 + 200);
             cvLine(img, cvPoint(i, 0), cvPoint(i, H), c, rand()%2+1, 8, 0);
@@ -55,9 +55,9 @@ VALUE rb_captcha_image(VALUE self, VALUE string, VALUE lv) {
     }
     if (level >= MEDIUM) {
         for (i = 0; i < 10; i++) {
-            c = CV_RGB(rand()%50 + 120, rand()%50 + 120, rand()%50 + 120);
+            j = rand()%50 + 120;
             pt = cvPoint(rand()%W, rand()%H);
-            cvEllipse(img, pt, cvSize(rand()%50+2, rand()%50+2), rand()%90, 0, 360, c, 1, 8, 0);
+            cvEllipse(img, pt, cvSize(rand()%50+10, rand()%50+10), rand()%90, 0, 360, CV_RGB(j,j,j), 1, 8, 0);
         }
     }
     x = rand()%40;
