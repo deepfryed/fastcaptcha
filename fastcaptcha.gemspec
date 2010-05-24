@@ -5,16 +5,17 @@
 
 Gem::Specification.new do |s|
   s.name = %q{fastcaptcha}
-  s.version = "0.1.0"
+  s.version = "0.1.1"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Bharanee Rathna"]
-  s.date = %q{2010-05-24}
+  s.date = %q{2010-05-25}
   s.description = %q{A simple and fast image captcha generator that uses opencv and memcached.}
   s.email = %q{deepfryed@gmail.com}
   s.extensions = ["ext/extconf.rb"]
   s.extra_rdoc_files = [
-    "README"
+    "LICENSE",
+     "README"
   ]
   s.files = [
     "README",

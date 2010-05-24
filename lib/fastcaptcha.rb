@@ -26,7 +26,9 @@ class FastCaptcha
   end
 
   def validate key, response
-    @cache.get(key) == response
+    rv = @cache.get(key) == response
+    @cache.delete(key) if rv
+    rv
   end
 
   def memcached_connection
