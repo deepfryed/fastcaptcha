@@ -23,6 +23,24 @@ static VALUE eArgumentError;
 #define MEDIUM  3
 #define HARD    4
 
+void bgWarp(IplImage *src, IplImage *dst) {
+    float m[6];
+    CvMat M = cvMat(2, 3, CV_32F, m);
+    int w = src->width;
+    int h = src->height;
+    float angle = (float)(rand()%90+10);
+
+    float factor = 1;
+    m[0] = (float)(factor*cos(-angle*2*CV_PI/180.));
+    m[1] = (float)(factor*sin(-angle*2*CV_PI/180.));
+    m[3] = -m[1];
+    m[4] = m[0];
+    m[2] = w*0.75f;
+    m[5] = h*0.75f;
+
+    cvGetQuadrangleSubPix( src, dst, &M);
+}
+
 VALUE rb_captcha_image(VALUE self, VALUE string, VALUE lv) {
     CvScalar c;
     CvPoint *pts, pt;
@@ -41,7 +59,7 @@ VALUE rb_captcha_image(VALUE self, VALUE string, VALUE lv) {
     for (i = 0; i < 5; i++) {
         sx = (float)(rand()%4)*0.1 + 1.0;
         sy = (float)(rand()%4)*0.1 + 1.0;
-        cvInitFont(&font[i], CV_FONT_HERSHEY_SIMPLEX, sx, sy, 1, 2, 16);
+        cvInitFont(&font[i], CV_FONT_HERSHEY_SIMPLEX, sx, sy, 1, 2, 8);
     }
     if (level > SILLY && level < HARD) {
         for (i = 0; i < W; i += 5) {
@@ -54,6 +72,7 @@ VALUE rb_captcha_image(VALUE self, VALUE string, VALUE lv) {
         }
     }
     if (level >= MEDIUM) {
+        bgWarp(img, img);
         for (i = 0; i < 10; i++) {
             j = rand()%50 + 120;
             pt = cvPoint(rand()%W, rand()%H);
