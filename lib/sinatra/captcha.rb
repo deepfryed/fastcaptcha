@@ -1,3 +1,5 @@
+require 'fastcaptcha'
+
 module Sinatra
   module CaptchaHelpers
     def captcha opts={}
@@ -53,7 +55,9 @@ module Sinatra
         challenge = @generator.generate @ttl, false
         snippet = <<-HTML
           <div id="#{id}">
-            <img src="/captcha/#{challenge.key}">
+            <div style="width:200px;height:50px;padding:0">
+              <img style="margin: 0 auto" src="/captcha/#{challenge.key}" alt="loading ...">
+            </div>
             <input type="hidden" name="captcha[challenge]" value="#{challenge.key}">
             <input autocomplete="off" id="cr#{id}" name="captcha[response]" value="">
           </div>
