@@ -41,12 +41,16 @@ void bgWarp(IplImage *src, IplImage *dst) {
     cvGetQuadrangleSubPix( src, dst, &M);
 }
 
-VALUE rb_captcha_image(VALUE self, VALUE string, VALUE lv) {
+VALUE rb_captcha_image(int argc, VALUE* argv, VALUE self) {
+    VALUE string, lv, w, h;
+
+    rb_scan_args(argc, argv, "22", &string, &lv, &w, &h);
+
     CvScalar c;
     CvPoint *pts, pt;
     CvFont font[5];
     char text[2];
-    IplImage *img;
+    IplImage *img, *dst;
     CvMat *out;
     int i, j, x, y;
     char *cstr = RSTRING_PTR(string);
@@ -96,9 +100,16 @@ VALUE rb_captcha_image(VALUE self, VALUE string, VALUE lv) {
             cvLine(img, pts[i], pts[i+1], c, 2, 8, 0);
         }
     }
-    out = cvEncodeImage(".png", img, 0);
+
+    w = NIL_P(w) ? INT2NUM(W) : w;
+    h = NIL_P(h) ? INT2NUM(H) : h;
+
+    dst = cvCreateImage(cvSize(NUM2INT(w), NUM2INT(h)), 8, 3);
+    cvResize(img, dst, CV_INTER_CUBIC);
+    out = cvEncodeImage(".png", dst, 0);
     VALUE imgdata = rb_str_new((const char *)out->data.ptr, out->step);
     cvReleaseImage(&img);
+    cvReleaseImage(&dst);
     cvReleaseMat(&out);
     free(pts);
     return imgdata;
@@ -112,5 +123,5 @@ void Init_fastcaptcha(void) {
     eRuntimeError  = CONST_GET(rb_mKernel, "RuntimeError");
     eArgumentError = CONST_GET(rb_mKernel, "ArgumentError");
     rb_cFC = rb_define_class("FastCaptcha", rb_cObject);
-    rb_define_method(rb_cFC, "image", rb_captcha_image, 2);
+    rb_define_method(rb_cFC, "image", rb_captcha_image, -1);
 }

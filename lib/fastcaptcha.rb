@@ -3,15 +3,17 @@ require 'digest/sha1'
 class FastCaptcha
   CHARSET = ('A'..'Z').to_a + (0..9).to_a - [ 'I', 1, 'O', 0, 'G' ]
 
-  def initialize cache=nil, level=1
-    @cache = cache || memcached_connection
-    @level = level
+  def initialize cache=nil, level=1, w=200, h=50
+    @cache  = cache || memcached_connection
+    @level  = level
+    @width  = w
+    @height = h
   end
 
   def generate ttl=60, png=true, text=nil
     text = text || 6.times.map { CHARSET[rand(CHARSET.length)] }.join('')
     key = store(text, ttl)
-    Challenge.new(key, png ? image(text, @level) : nil)
+    Challenge.new(key, png ? image(text, @level, @width, @height) : nil)
   end
 
   def store text, ttl
@@ -22,11 +24,11 @@ class FastCaptcha
 
   def refresh key
     text = @cache.get(key)
-    text ? image(text, @level) : nil
+    text ? image(text, @level, @width, @height) : nil
   end
 
   def validate key, response
-    rv = @cache.get(key) == response
+    rv = @cache.get(key) == response.upcase.strip
     @cache.delete(key) if rv
     rv
   end
