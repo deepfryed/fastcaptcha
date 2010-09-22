@@ -97,8 +97,10 @@ module Sinatra
             }
           </script>
           <div class="captcha" style="display:none" id="#{id}"></div>
-          <button id="#{id}_v" class="submit">Show Captcha</button>
-          <button id="#{id}_r" class="submit" style="display:none">Refresh Captcha</button>
+          <div>
+            <button id="#{id}_v" class="submit">Show Captcha</button>
+            <button id="#{id}_r" class="submit" style="display:none">Refresh Captcha</button>
+          </div>
         HTML
       end
 
