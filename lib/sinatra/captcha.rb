@@ -51,13 +51,14 @@ module Sinatra
       def initialize app
         @generator = FastCaptcha.new(nil, app.captcha_level, app.captcha_width, app.captcha_height)
         @ttl = app.captcha_ttl
+        @width, @height = app.captcha_width, app.captcha_height
       end
 
       def html id='captcha', key=nil
         challenge = @generator.generate @ttl, false
         snippet = <<-HTML
           <div id="#{id}">
-            <div style="width:200px;height:50px;padding:0">
+            <div style="width:#{@width}px;height:#{@height}px;padding:0">
               <img style="margin: 0 auto" src="/captcha/#{challenge.key}" alt="loading ...">
             </div>
             <input type="hidden" name="captcha[challenge]" value="#{challenge.key}">

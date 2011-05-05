@@ -21,8 +21,9 @@ Jeweler::Tasks.new do |gem|
   gem.homepage    = 'http://github.com/deepfryed/fastcaptcha'
   gem.authors     = ['Bharanee Rathna']
  
-  gem.add_dependency 'memcached', '>= 0.17.7'
-  gem.add_development_dependency 'ansi', '>= 1.2.1'
+  gem.add_dependency             'moneta', '>= 0.6.0'
+  gem.add_development_dependency 'ansi',   '>= 1.2.1'
+  gem.add_development_dependency 'redis',  '>= 2.1.1'
 
   gem.files = FileList[
     'lib/**/*.rb',

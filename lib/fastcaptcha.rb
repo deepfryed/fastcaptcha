@@ -1,41 +1,47 @@
 require_relative '../ext/fastcaptcha'
 require 'digest/sha1'
-class FastCaptcha
-  CHARSET = ('A'..'Z').to_a + (0..9).to_a - [ 'I', 1, 'O', 0, 'G' ]
+require 'moneta'
 
-  def initialize cache=nil, level=1, w=200, h=50
-    @cache  = cache || memcached_connection
+class FastCaptcha
+  CHARSET = ('A'..'Z').to_a + (0..9).to_a - ['I', 1, 'O', 0, 'G']
+
+  attr_reader :cache
+
+  def initialize cache = nil, level = 1, w = 200, h = 50
+    @cache  = cache || cache_connection
     @level  = level
     @width  = w
     @height = h
   end
 
-  def generate ttl=60, png=true, text=nil
+  def generate ttl = 60, png = true, text = nil
     text = text || 6.times.map { CHARSET[rand(CHARSET.length)] }.join('')
-    key = store(text, ttl)
+    key  = store(text.strip.upcase, ttl)
     Challenge.new(key, png ? image(text, @level, @width, @height) : nil)
   end
 
+  def hash text
+    'fastcaptcha:%s' % Digest::SHA1.hexdigest("#{text}#{Time.now.to_f}")
+  end
+
   def store text, ttl
-    key = Digest::SHA1.hexdigest("#{text}#{Time.now.to_s}")
-    @cache.set key, text, ttl
+    key = hash(text)
+    cache.store(key, text, expires_in: ttl)
     key
   end
 
   def refresh key
-    text = @cache.get(key)
+    text = cache[key]
     text ? image(text, @level, @width, @height) : nil
   end
 
   def validate key, response
-    rv = @cache.get(key) == response.upcase.strip
-    @cache.delete(key) if rv
-    rv
+    rv = cache[key] == response.upcase.strip
+    rv && cache.delete(key)
   end
 
-  def memcached_connection
-    require 'cache/memcached'
-    Cache::Memcached.instance
+  def cache_connection
+    Moneta::Memcache.new
   end
 
   class Challenge
