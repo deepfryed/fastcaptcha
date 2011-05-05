@@ -35,10 +35,15 @@ SINATRA HELPER:
 
   require 'sinatra/captcha'
   class MyApp < Sinatra::Base
-    # ttl of captcha before user has to respond - 10s is an aggressive but reasonable value.
+    # ttl of captcha before user has to respond.
     set :captcha_ttl, 30
+
     # complexity 1 is simple, 4 is wicked hard (makes segmentation very difficult).
     set :captcha_level, 2
+
+    # use memcached instead of redis (default).
+    # set :captcha_cache, Moneta::Memcache
+
     register Sinatra::Captcha
   end
 

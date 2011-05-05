@@ -1,5 +1,4 @@
 require 'fastcaptcha'
-require 'moneta/redis2'
 
 module Sinatra
   module CaptchaHelpers
@@ -15,6 +14,13 @@ module Sinatra
     end
   end
   module Captcha
+    def self.set_captcha_cache_class app
+      unless app.respond_to? :captcha_cache
+        require 'moneta/redis2'
+        app.set :captcha_cache, Moneta::Redis2
+      end
+    end
+
     def self.registered app
       app.helpers CaptchaHelpers
 
@@ -22,8 +28,9 @@ module Sinatra
       app.set :captcha_level,   2              unless app.respond_to? :captcha_level
       app.set :captcha_width,   200            unless app.respond_to? :captcha_width
       app.set :captcha_height,  50             unless app.respond_to? :captcha_height
-      app.set :captcha_cache,   Moneta::Redis2 unless app.respond_to? :captcha_cache
       app.set :captcha_handler, Image.new(app)
+
+      set_captcha_cache_class(app)
 
       app.get '/captcha/refresh' do
         content_type 'text/plain'
@@ -56,7 +63,7 @@ module Sinatra
         @width, @height = app.captcha_width, app.captcha_height
       end
 
-      def html id='captcha', key=nil
+      def html id = 'captcha', key = nil
         challenge = @generator.generate @ttl, false
         snippet = <<-HTML
           <div id="#{id}">
@@ -69,8 +76,8 @@ module Sinatra
         HTML
       end
 
-      def ajax_html id='captcha_ajax'
-        divid = id + '_div'
+      def ajax_html id = 'captcha_ajax'
+        div_id  = id + '_div'
         snippet = <<-HTML
           <script type="text/javascript">
             $(document).ready(function() {
@@ -89,7 +96,7 @@ module Sinatra
             function load_captcha_#{id}() {
                 $('##{id}_r').hide();
                 $('##{id}').slideDown(250);
-                $('##{id}').load('/captcha/snippet/#{divid}', function() {
+                $('##{id}').load('/captcha/snippet/#{div_id}', function() {
                   $('##{id}').find('input[name="captcha[response]"]').focus();
                 });
                 $('##{id}').delay(#{@ttl*500}).slideUp(250, function() {
