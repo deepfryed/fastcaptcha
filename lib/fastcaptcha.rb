@@ -41,7 +41,8 @@ class FastCaptcha
   end
 
   def cache_connection
-    Moneta::Memcache.new
+    require 'moneta/redis2'
+    Moneta::Redis2.new
   end
 
   class Challenge

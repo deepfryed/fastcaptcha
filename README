@@ -13,14 +13,14 @@ REQUIREMENT:
 USAGE:
 
   >> require 'fastcaptcha'
-  >> captcha = FastCaptcha.new # defaults to memcached and low complexity captchas.
+  >> captcha = FastCaptcha.new # defaults to redis for caching and low complexity captchas.
   >> challenge = captcha.generate
   >> puts challenge.key
   >> puts challenge.image # PNG image data
 
   >> require 'fastcaptcha'
-  >> require 'moneta/redis2'
-  >> captcha = FastCaptcha.new(Moneta::Redis2.new, 3) # use redis & level 3 complexity
+  >> require 'moneta/memcache'
+  >> captcha = FastCaptcha.new(Moneta::Memcache.new, 3) # use memcached instead & level 3 complexity
   >> challenge = captcha.generate
   >> puts challenge.key
   >> puts challenge.image # PNG image data

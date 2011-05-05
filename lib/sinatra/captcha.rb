@@ -1,4 +1,5 @@
 require 'fastcaptcha'
+require 'moneta/redis2'
 
 module Sinatra
   module CaptchaHelpers
@@ -17,10 +18,11 @@ module Sinatra
     def self.registered app
       app.helpers CaptchaHelpers
 
-      app.set :captcha_ttl,     60  unless app.respond_to? :captcha_ttl
-      app.set :captcha_level,   2   unless app.respond_to? :captcha_level
-      app.set :captcha_width,   200 unless app.respond_to? :captcha_width
-      app.set :captcha_height,  50  unless app.respond_to? :captcha_height
+      app.set :captcha_ttl,     60             unless app.respond_to? :captcha_ttl
+      app.set :captcha_level,   2              unless app.respond_to? :captcha_level
+      app.set :captcha_width,   200            unless app.respond_to? :captcha_width
+      app.set :captcha_height,  50             unless app.respond_to? :captcha_height
+      app.set :captcha_cache,   Moneta::Redis2 unless app.respond_to? :captcha_cache
       app.set :captcha_handler, Image.new(app)
 
       app.get '/captcha/refresh' do
