@@ -12,6 +12,14 @@ lib_2   = [ 'highgui', 'cvEncodeImage', headers ]
 if have_header('opencv/cxcore.h') && have_library(*lib_1) && have_library(*lib_2)
   create_makefile 'fastcaptcha'
 else
-  puts "Cannot find opencv headers or libraries"
+  puts %q{
+    Cannot find opencv headers or libraries.
+
+    On debian based systems you can install it from apt as,
+      sudo apt-get install libcv-dev libhighgui-dev
+
+    Refer to http://opencv.willowgarage.com/wiki/InstallGuide for other platforms or operating systems.
+  }
+
   exit 1
 end
