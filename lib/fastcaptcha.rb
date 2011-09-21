@@ -36,7 +36,7 @@ class FastCaptcha
   end
 
   def validate key, response
-    rv = cache[key] == response.upcase.strip
+    rv = response && (cache[key] == response.upcase.strip)
     rv && cache.delete(key)
   end
 
