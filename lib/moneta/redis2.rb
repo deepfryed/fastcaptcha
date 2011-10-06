@@ -8,7 +8,11 @@ module Moneta
     end
 
     def store key, value, options = {}
-      @cache.setex(key, options[:expires_in], value)
+      if options.key?(:expires_in)
+        @cache.setex(key, options[:expires_in], value)
+      else
+        @cache.set(key, value)
+      end
     end
 
     def delete key
